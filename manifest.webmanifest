@@ -1,0 +1,15 @@
+{
+  "name": "Crumb — Ottawa sourdough notes",
+  "short_name": "Crumb",
+  "description": "A private, offline-first sourdough calculator and bake journal for Ottawa home bakers.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2eadb",
+  "theme_color": "#f2eadb",
+  "lang": "en-CA",
+  "categories": ["food", "lifestyle", "utilities"],
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f2eadb" />
+    <meta name="description" content="A private, offline-first sourdough calculator for Ottawa home bakers." />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Crumb — Ottawa sourdough notes</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Crumb home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span><strong>Crumb</strong><small>Ottawa · home bake no. <span id="bakeNumber">01</span></small></span>
+      </a>
+      <div class="header-actions">
+        <span class="offline-pill" id="networkStatus"><i></i> Private &amp; local</span>
+        <button class="button ghost hidden" id="installButton" type="button">Install app</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="eyebrow"><span></span> Sourdough, without the spreadsheet</div>
+        <h1 id="heroTitle">Plan a better<br /><em>loaf.</em></h1>
+        <div class="hero-bottom">
+          <p>One quiet place to scale a dough, map the day, and remember what worked—in grams, Celsius, and Ottawa time.</p>
+          <div class="season-stamp" aria-label="Ottawa seasonal note">
+            <span id="seasonName">FALL</span>
+            <strong id="seasonTemp">21°C</strong>
+            <small id="seasonNote">Typical indoor starting point</small>
+          </div>
+        </div>
+        <div class="grain-line" aria-hidden="true"></div>
+      </section>
+
+      <section class="workspace" aria-label="Dough calculator">
+        <div class="section-heading">
+          <div><span class="section-index">01</span><h2>Build your dough</h2></div>
+          <p>Enter the dough you want. Everything else stays in balance.</p>
+        </div>
+
+        <div class="recipe-modes" role="group" aria-label="Recipe method">
+          <button type="button" class="active" data-mode="classic"><span>01</span><b>Classic loaf</b><small>Folds + cold proof</small></button>
+          <button type="button" data-mode="nofuss"><span>02</span><b>No-fuss overnight</b><small>Your saved PDF recipe</small></button>
+        </div>
+
+        <p class="mode-description" id="modeDescription">A flexible country loaf with strength-building folds and a cold proof.</p>
+
+        <div class="calculator-grid">
+          <form class="controls" id="doughForm">
+            <label class="large-field">
+              <span>Total dough</span>
+              <span class="input-wrap"><input id="doughWeight" type="number" min="200" max="10000" step="10" value="900" inputmode="decimal" /><b>g</b></span>
+            </label>
+
+            <div class="control-row">
+              <label><span>Loaves</span><input id="loaves" type="number" min="1" max="12" value="1" inputmode="numeric" /></label>
+              <output><span>Each loaf</span><strong id="loafWeight">900 g</strong></output>
+            </div>
+
+            <label class="slider-field">
+              <span><b>Hydration</b><output id="hydrationValue">75%</output></span>
+              <input id="hydration" type="range" min="55" max="100" step="1" value="75" />
+              <small><span>55% firm</span><span>100% open</span></small>
+            </label>
+            <label class="slider-field">
+              <span><b>Sourdough starter</b><output id="starterValue">20%</output></span>
+              <input id="starter" type="range" min="5" max="40" step="0.1" value="20" />
+              <small><span>5% slow</span><span>40% fast</span></small>
+            </label>
+            <label class="slider-field">
+              <span><b>Salt</b><output id="saltValue">2.0%</output></span>
+              <input id="salt" type="range" min="1" max="3" step="0.1" value="2" />
+              <small><span>1% mild</span><span>3% bold</span></small>
+            </label>
+
+            <details>
+              <summary>Flour mix &amp; starter details <span>+</span></summary>
+              <div class="details-grid">
+                <label>Whole grain <span><input id="wholeGrain" type="number" min="0" max="100" value="20" /> %</span></label>
+                <label>Starter hydration <span><input id="starterHydration" type="number" min="50" max="200" value="100" /> %</span></label>
+              </div>
+            </details>
+          </form>
+
+          <article class="recipe-card" aria-live="polite">
+            <div class="recipe-head">
+              <div><span>Your formula</span><h3 id="formulaName">Ottawa country loaf</h3></div>
+              <span class="yield-badge" id="yieldBadge">1 × 900 g</span>
+            </div>
+            <div class="ingredient hero-ingredient">
+              <div><i class="swatch flour"></i><span>Flour</span><small id="flourBreakdown">80% white · 20% whole grain</small></div>
+              <strong id="flourAmount">508 <small>g</small></strong>
+            </div>
+            <div class="ingredient">
+              <div><i class="swatch water"></i><span>Water</span><small id="waterBreakdown">Total water, including starter</small></div>
+              <strong id="waterAmount">381 <small>g</small></strong>
+            </div>
+            <div class="ingredient">
+              <div><i class="swatch starter-swatch"></i><span>Active sourdough starter</span><small id="starterBreakdown">100% hydration</small></div>
+              <strong id="starterAmount">102 <small>g</small></strong>
+            </div>
+            <div class="ingredient">
+              <div><i class="swatch salt"></i><span>Fine sea salt</span><small>2.0% baker’s percentage</small></div>
+              <strong id="saltAmount">10 <small>g</small></strong>
+            </div>
+            <p class="math-note" id="mathNote">Flour and water shown are totals. The mix instructions below subtract what is already in your starter.</p>
+            <div class="mix-box">
+              <span>Put in the bowl</span>
+              <div><b id="mixFlour">457 g</b> flour <span>+</span> <b id="mixWater">330 g</b> water <span>+</span> <b id="mixStarter">102 g</b> starter <span>+</span> <b id="mixSalt">10 g</b> salt</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="schedule-section" aria-label="Fermentation schedule">
+        <div class="section-heading light">
+          <div><span class="section-index">02</span><h2>Map your bake</h2></div>
+          <p>A calm, flexible timeline—not an alarm clock. Watch the dough first.</p>
+        </div>
+
+        <article class="weather-card" id="weatherCard">
+          <div class="weather-source"><span>LIVE OUTDOOR CONDITIONS</span><a href="https://weather.gc.ca/city/pages/on-118_metric_e.html" target="_blank" rel="noreferrer">Environment Canada ↗</a></div>
+          <div class="weather-reading">
+            <strong id="weatherTemp">—°C</strong>
+            <div><b id="weatherHumidity">—% RH</b><span id="weatherDetails">Loading the latest Ottawa observation…</span></div>
+            <button type="button" id="refreshWeather" aria-label="Refresh weather">↻</button>
+          </div>
+          <p id="weatherAdvice">Outdoor humidity helps predict surface drying. Your measured kitchen temperature still controls the fermentation estimate.</p>
+        </article>
+
+        <div class="schedule-setup">
+          <label><span>Start mixing</span><input id="startTime" type="datetime-local" /></label>
+          <label><span>Room temperature</span><span class="temp-input"><input id="roomTemp" type="number" min="15" max="32" step="0.5" value="21" /><b>°C</b></span></label>
+          <div class="preset-group" role="group" aria-label="Ottawa season presets">
+            <button type="button" data-temp="19" data-season="winter">Winter</button>
+            <button type="button" data-temp="21" data-season="spring">Spring</button>
+            <button type="button" data-temp="25" data-season="summer">Summer</button>
+            <button type="button" data-temp="21" data-season="fall" class="active">Fall</button>
+          </div>
+        </div>
+
+        <div class="sleep-strip" id="sleepStrip">
+          <div><span class="moon" aria-hidden="true">☾</span><span><b>Sleep protected · 10 PM–7 AM</b><small id="sleepStatus">Active steps stay outside your sleep window.</small></span></div>
+          <button type="button" id="fitSleep">Fit schedule around sleep</button>
+        </div>
+
+        <ol class="timeline" id="timeline"></ol>
+        <div class="watch-card">
+          <div class="watch-icon" aria-hidden="true">↗</div>
+          <div><span id="watchLabel">THE DOUGH DECIDES</span><p id="fermentationAdvice">At 21°C, expect an unhurried bulk. Look for a 50–60% rise, a domed edge, and a gentle wobble before shaping.</p></div>
+        </div>
+      </section>
+
+      <section class="journal-section" aria-label="Bake journal">
+        <div class="section-heading">
+          <div><span class="section-index">03</span><h2>Remember the good ones</h2></div>
+          <p>Your notes stay on this device. No account, no cloud, no audience.</p>
+        </div>
+        <div class="journal-grid">
+          <form class="journal-form" id="journalForm">
+            <label><span>Bake name</span><input id="bakeName" maxlength="60" value="Saturday country loaf" /></label>
+            <label><span>What do you want to remember?</span><textarea id="bakeNotes" rows="4" maxlength="500" placeholder="Crust, crumb, timing, what you would change next time…"></textarea></label>
+            <div class="rating-row">
+              <span>How was it?</span>
+              <div id="ratingButtons" role="radiogroup" aria-label="Bake rating">
+                <button type="button" data-rating="1" aria-label="1 out of 5">1</button><button type="button" data-rating="2" aria-label="2 out of 5">2</button><button type="button" data-rating="3" aria-label="3 out of 5">3</button><button type="button" data-rating="4" aria-label="4 out of 5">4</button><button type="button" data-rating="5" aria-label="5 out of 5">5</button>
+              </div>
+            </div>
+            <button class="button primary" type="submit">Save this bake <span>→</span></button>
+          </form>
+          <div class="saved-bakes">
+            <div class="saved-head"><span>Recent bakes</span><button id="clearBakes" type="button">Clear all</button></div>
+            <div id="bakeList" class="bake-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>Crumb · made for one kitchen</span><span>Ottawa, Ontario · <span id="currentYear"></span></span></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
